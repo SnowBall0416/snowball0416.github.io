@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雪球网址导航站</title>
+    <link rel="shortcut icon" href="logos/akuya.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+        .layout { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: 200px;
+            height: 100vh;
+            background: #1a1a2e;
+            color: #fff;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            font-weight: 700;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+        .sidebar nav { padding: 12px 0; }
+        .sidebar a {
+            display: block;
+            padding: 10px 20px;
+            color: rgba(255,255,255,.7);
+            text-decoration: none;
+            font-size: 14px;
+            transition: .2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar a:hover,
+        .sidebar a.active {
+            color: #fff;
+            background: rgba(255,255,255,.08);
+            border-left-color: #4f6ef7;
+        }
+        /* Main */
+        .main { margin-left: 200px; padding: 30px 60px; min-height: 100vh; width: calc(100% - 200px); }
+        .main-inner { margin: 0 auto; }
+
+        /* Search */
+        .search-section { text-align: center; margin-bottom: 40px; }
+        .search-section h1 { font-size: 28px; font-weight: 700; margin-bottom: 18px; color: #1a1a2e; }
+        .search-box {
+            display: inline-flex;
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.08);
+            overflow: hidden;
+        }
+        .search-box select {
+            border: none; padding: 0 12px; background: #f7f7f8;
+            font-size: 14px; outline: none; cursor: pointer;
+            border-right: 1px solid #e8e8e8;
+        }
+        .search-box input {
+            flex: 1; border: none; padding: 13px 16px; font-size: 15px; outline: none;
+        }
+        .search-box button {
+            background: #4f6ef7; color: #fff; border: none;
+            padding: 0 22px; font-size: 14px; cursor: pointer; font-weight: 600;
+        }
+        .search-box button:hover { background: #3b57d9; }
+        .search-engines {
+            display: flex; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap;
+        }
+        .search-engines a {
+            display: inline-block; padding: 5px 14px; border-radius: 14px;
+            background: #fff; color: #555; text-decoration: none;
+            font-size: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06); transition: .2s;
+        }
+        .search-engines a:hover { background: #4f6ef7; color: #fff; }
+
+        /* Category */
+        .category { margin-bottom: 36px; scroll-margin-top: 20px; }
+        .category-title {
+            font-size: 20px; font-weight: 700; margin-bottom: 16px;
+            padding-left: 12px; border-left: 4px solid #4f6ef7; color: #1a1a2e;
+        }
+        .category-title.entertainment { border-left-color: #e74c3c; }
+        .category-title.ai { border-left-color: #10a37f; }
+        .category-title.finance { border-left-color: #e67e22; }
+        .category-title.gaming { border-left-color: #9b59b6; }
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        .site-card {
+            display: flex; align-items: center; gap: 18px;
+            padding: 20px 24px; background: #fff; border-radius: 12px;
+            text-decoration: none; color: #333;
+            box-shadow: 0 1px 6px rgba(0,0,0,.06); transition: transform .2s, box-shadow .2s;
+        }
+        .site-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,.1);
+        }
+        .site-card img {
+            width: 40px; height: 40px; object-fit: contain; border-radius: 6px;
+        }
+        .site-card .site-name { font-size: 16px; font-weight: 500; }
+    </style>
+</head>
+<body>
+<div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>雪球网址导航站</h2>
+            <nav>
+                <a href="#search-engine" class="active">搜索引擎</a>
+                <a href="#entertainment">娱乐</a>
+                <a href="#finance">财经</a>
+                <a href="#ai">大模型</a>
+                <a href="#gaming">飞檐走壁</a>
+            </nav>
+        </aside>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="main-inner">
+            <div class="search-section">
+                <h1>雪球网址导航站</h1>
+                <div class="search-box">
+                    <select id="engine">
+                        <option value="https://cn.bing.com/search?q=" selected>Bing</option>
+                        <option value="https://www.baidu.com/s?wd=">百度</option>
+                        <option value="https://www.google.com/search?q=">Google</option>
+                    </select>
+                    <input type="text" id="query" placeholder="搜索..." autofocus>
+                    <button onclick="search()">搜索</button>
+                </div>
+                <div class="search-engines">
+                    <a href="https://www.baidu.com">百度</a>
+                    <a href="https://www.google.com">Google</a>
+                    <a href="https://cn.bing.com">Bing</a>
+                </div>
+            </div>
+
+            <!-- Search Engines -->
+            <div class="category" id="search-engine">
+                <div class="category-title">搜索引擎</div>
+                <div class="site-grid">
+                    <a class="site-card" href="https://www.baidu.com" target="_blank">
+                        <img src="logos/baidu.png" alt="">
+                        <span class="site-name">百度</span>
+                    </a>
+                    <a class="site-card" href="https://www.google.com" target="_blank">
+                        <img src="logos/google.png" alt="">
+                        <span class="site-name">Google</span>
+                    </a>
+                    <a class="site-card" href="https://cn.bing.com" target="_blank">
+                        <img src="logos/bing.ico" alt="">
+                        <span class="site-name">Bing</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Entertainment -->
+            <div class="category" id="entertainment">
+                <div class="category-title entertainment">娱乐</div>
+                <div class="site-grid">
+                    <a class="site-card" href="https://www.bilibili.com" target="_blank">
+                        <img src="logos/bilibili.jpeg" alt="">
+                        <span class="site-name">B站</span>
+                    </a>
+                    <a class="site-card" href="https://www.zhihu.com" target="_blank">
+                        <img src="logos/zhihu.ico" alt="">
+                        <span class="site-name">知乎</span>
+                    </a>
+                    <a class="site-card" href="https://www.weibo.com" target="_blank">
+                        <img src="logos/weibo.ico" alt="">
+                        <span class="site-name">微博</span>
+                    </a>
+                    <a class="site-card" href="https://bbs.nga.cn" target="_blank">
+                        <img src="logos/nga.png" alt="">
+                        <span class="site-name">NGA</span>
+                    </a>
+                    <a class="site-card" href="https://animes.garden" target="_blank">
+                        <img src="logos/animes_garden.ico" alt="">
+                        <span class="site-name">animes.garden</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Finance -->
+            <div class="category" id="finance">
+                <div class="category-title finance">财经</div>
+                <div class="site-grid">
+                    <a class="site-card" href="https://xueqiu.com" target="_blank">
+                        <img src="logos/xueqiu.jpg" alt="">
+                        <span class="site-name">雪球</span>
+                    </a>
+                    <a class="site-card" href="https://www.taoguba.com.cn" target="_blank">
+                        <img src="logos/taoguba.png" alt="">
+                        <span class="site-name">淘股吧</span>
+                    </a>
+                    <a class="site-card" href="https://finance.sina.com.cn" target="_blank">
+                        <img src="logos/sina_finance.ico" alt="">
+                        <span class="site-name">新浪财经</span>
+                    </a>
+                    <a class="site-card" href="https://www.10jqka.com.cn" target="_blank">
+                        <img src="logos/ths.webp" alt="">
+                        <span class="site-name">同花顺</span>
+                    </a>
+                    <a class="site-card" href="https://www.eastmoney.com" target="_blank">
+                        <img src="logos/eastmoney.ico" alt="">
+                        <span class="site-name">东方财富</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AI Models -->
+            <div class="category" id="ai">
+                <div class="category-title ai">大模型</div>
+                <div class="site-grid">
+                    <a class="site-card" href="https://github.com" target="_blank">
+                        <img src="logos/github.ico" alt="">
+                        <span class="site-name">GitHub</span>
+                    </a>
+                    <a class="site-card" href="https://chatgpt.com" target="_blank">
+                        <img src="logos/chatgpt.png" alt="">
+                        <span class="site-name">ChatGPT</span>
+                    </a>
+                    <a class="site-card" href="https://claude.ai" target="_blank">
+                        <img src="logos/claude.ico" alt="">
+                        <span class="site-name">Claude</span>
+                    </a>
+                    <a class="site-card" href="https://gemini.google.com" target="_blank">
+                        <img src="logos/gemini.ico" alt="">
+                        <span class="site-name">Gemini</span>
+                    </a>
+                    <a class="site-card" href="https://chat.deepseek.com" target="_blank">
+                        <img src="logos/deepseek.ico" alt="">
+                        <span class="site-name">DeepSeek</span>
+                    </a>
+                    <a class="site-card" href="https://chat.qwen.ai" target="_blank">
+                        <img src="logos/qwen.ico" alt="">
+                        <span class="site-name">千问</span>
+                    </a>
+                    <a class="site-card" href="https://kimi.moonshot.cn" target="_blank">
+                        <img src="logos/kimi.ico" alt="">
+                        <span class="site-name">Kimi</span>
+                    </a>
+                    <a class="site-card" href="https://www.doubao.com" target="_blank">
+                        <img src="logos/doubao.ico" alt="">
+                        <span class="site-name">豆包</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Gaming -->
+            <div class="category" id="gaming">
+                <div class="category-title gaming">飞檐走壁</div>
+                <div class="site-grid">
+                    <a class="site-card" href="https://www.youtube.com" target="_blank">
+                        <img src="logos/youtube.png" alt="">
+                        <span class="site-name">YouTube</span>
+                    </a>
+                    <a class="site-card" href="https://www.reddit.com" target="_blank">
+                        <img src="logos/reddit.png" alt="">
+                        <span class="site-name">Reddit</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+            </div>
+    </div>
+
+    <script>
+        function search() {
+            var q = document.getElementById('query').value;
+            var engine = document.getElementById('engine').value;
+            if (q.trim()) window.open(engine + encodeURIComponent(q));
+        }
+        document.getElementById('query').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') search();
+        });
+        // Highlight current section in sidebar
+        var links = document.querySelectorAll('.sidebar nav a');
+        var sections = document.querySelectorAll('.category');
+        window.addEventListener('scroll', function() {
+            var cur = '';
+            sections.forEach(function(s) {
+                if (window.scrollY >= s.offsetTop - 100) cur = s.id;
+            });
+            links.forEach(function(l) {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+            });
+        });
+    </script>
+</body>
+</html>
